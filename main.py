@@ -2,6 +2,7 @@
 It initializes the pygame window, creates a group of boids, and handles user input and drawing.
 The main loop updates the boids' positions and velocities based on the flocking rules 
 (other than wall avoidance, which is handled in the boid class itself), and draws the boids and their FOVs to the screen.
+(FOVs are the translucent cones that show what each boid can see, and are used to determine which other boids are visible to it.)
 Every behavior changes the angle of the boid, but I am experimenting with 
 changing the speed of the boids if they get too close to each other.
 
