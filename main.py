@@ -21,7 +21,7 @@ pg.display.set_caption("Boids Simulation")
 clock = pg.time.Clock()
 FPS = 60
 SPEED=100/FPS #Makes it so that speed is in pixels per second, not pixels per frame
-NUM_BOIDS = 100
+NUM_BOIDS = 50
 BOID_SIZE = 10
 """All of the following radii are squared to avoid unnecessary square root calculations in the flocking math.
 The scaling factors (15, 6, 3) are arbitrary and can be adjusted to change the behavior of the boids."""
