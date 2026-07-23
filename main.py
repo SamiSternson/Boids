@@ -34,6 +34,16 @@ COLLISION_RADIUS_SQ        = BOID_SIZE ** 2
 FOV_HALF_ANGLE             = 135  #half of the total FOV cone
 
 fov_surface = pg.Surface((width, height), pg.SRCALPHA)
+# This function generates a random index to sample from a list based on some inverse power distribution
+@njit
+def chose_index_based_on_inverse_power(k, p):
+    probs=[(1/(i+1))**p for i in range(k)]
+    new_probs=[probs[i]*(100/sum(probs)) for i in range(k)]
+    for _ in range(k):
+        rand=np.random.random()*100
+        if rand>(100-sum(new_probs[0:_+1])):
+            return _
+    return 0
 """I asked Claude to optimize the code, and it took out a lot of the math that was previously
 done in the Boid class and moved it to a separate function that can be compiled with Numba."""
 @njit
@@ -108,11 +118,7 @@ def calculate_flock_math(x, y, vx, vy, angles, speeds, num_boids, vision_sq, sep
         visible_boids=sorted(visible_boids, key=lambda x: x[1])
         num_visible_boids=len(visible_boids)
         if  num_visible_boids> 0 and not super_sep:
-            #I am going to experiment with custom distributions for choosing with neighbor to align with at some point
-            # probs=[1/2**(i+1) for i in range(num_visible_boids)]
-            # new_probs=[probs[i]*(1/sum(probs)) for i in range(num_visible_boids)]
-            # neighbor=np.random.choice(np.arange(0, num_visible_boids), p=new_probs)
-            neighbor=r.randint(0, num_visible_boids-1)
+            neighbor=chose_index_based_on_inverse_power(num_visible_boids, 2)
             neighbor_x=x[visible_boids[neighbor][0]]
             neighbor_y=y[visible_boids[neighbor][0]]
             dx = neighbor_x - x[i]
